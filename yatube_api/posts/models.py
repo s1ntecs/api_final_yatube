@@ -1,8 +1,5 @@
-from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from django.db.models.signals import pre_save
 from django.db import models
-from rest_framework import serializers
 
 User = get_user_model()
 
@@ -58,12 +55,3 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.following} {self.user}'
-
-    class Meta:
-        unique_together = (('user', 'following',),)
-
-
-@receiver(pre_save, sender=Follow)
-def check_self_following(sender, instance, **kwargs):
-    if instance.following == instance.user:
-        raise serializers.ValidationError('You can not follow yourself')
